@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Nuova Toponomastica Aumentata</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+background:#e9eef3;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+#phone{
+width:390px;
+height:844px;
+background:#fff;
+border-radius:28px;
+overflow:hidden;
+box-shadow:0 20px 50px rgba(0,0,0,0.20);
+display:flex;
+flex-direction:column;
+position:relative;
+}
+
+header{
+background:linear-gradient(90deg,#003366,#0055aa);
+color:white;
+padding:16px;
+text-align:center;
+font-size:20px;
+font-weight:bold;
+}
+
+#map{
+flex:1;
+z-index:1;
+}
+
+.poiCard{
+position:absolute;
+top:80px;
+left:15px;
+right:15px;
+background:white;
+padding:14px;
+border-radius:18px;
+box-shadow:0 10px 30px rgba(0,0,0,0.25);
+z-index:999;
+display:none;
+}
+
+.poiCard h2{
+font-size:20px;
+margin-bottom:8px;
+color:#003366;
+}
+
+.poiCard p{
+font-size:14px;
+margin:6px 0;
+color:#333;
+}
+
+.poiCard button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:12px;
+background:#0055aa;
+color:white;
+font-weight:bold;
+font-size:15px;
+cursor:pointer;
+}
+
+.closeBtn{
+background:#ddd !important;
+color:#000 !important;
+margin-top:8px !important;
+}
+
+footer{
+height:90px;
+background:#111;
+color:white;
+display:flex;
+flex-direction:column;
+justify-content:center;
+padding:6px 0;
+}
+
+.rss{
+height:28px;
+overflow:hidden;
+white-space:nowrap;
+position:relative;
+border-top:1px solid rgba(255,255,255,.08);
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.track{
+display:inline-block;
+padding-left:100%;
+animation:scroll 28s linear infinite;
+font-size:13px;
+line-height:28px;
+}
+
+a{
+color:#00ffcc;
+text-decoration:none;
+font-weight:bold;
+margin-right:40px;
+}
+
+.brand{
+text-align:center;
+font-size:11px;
+padding-top:4px;
+letter-spacing:1px;
+color:#ccc;
+}
+
+@keyframes scroll{
+0%{transform:translateX(0)}
+100%{transform:translateX(-100%)}
+}
+</style>
+</head>
+
+<body>
+
+<div id="phone">
+
+<header>NUOVA TOPONOMASTICA AUMENTATA</header>
+
+<div id="map"></div>
+
+<div class="poiCard" id="card">
+<h2 id="poiTitle"></h2>
+<p id="poiDesc"></p>
+<p id="poiTransport"></p>
+<p id="poiDistance"></p>
+<button id="goBtn">PORTAMI QUI</button>
+<button class="closeBtn" onclick="closeCard()">CHIUDI</button>
+</div>
+
+<footer>
+
+<div class="rss">
+<div class="track" id="rss1">
+🎉 Concerto in piazza Centrale • 15/05/2026 ore 21:00 • Apertura mostra fotografica • 16/05/2026 ore 18:00 •
+</div>
+</div>
+
+<div class="rss">
+<div class="track" id="rss2">
+<a href="tel:070662641">Taxi</a>
+<a href="tel:070662641">Guardia Medica</a>
+<a href="tel:070662641">Veterinario</a>
+</div>
+</div>
+
+<div class="brand">PASSAMONTI_COMMUNICATION</div>
+
+</footer>
+
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+
+let map = L.map('map').setView([39.2238,9.1217],15);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+maxZoom:19
+}).addTo(map);
+
+let userLat=39.2238;
+let userLng=9.1217;
+
+function createRedIcon(){
+return L.divIcon({
+html:'<div style="background:red;width:18px;height:18px;border-radius:50%;border:3px solid white;"></div><div style="font-size:11px;font-weight:bold;color:red;margin-top:4px;text-align:center;">TU SEI QUI</div>',
+iconSize:[80,40],
+className:''
+});
+}
+
+let userMarker=L.marker([userLat,userLng],{icon:createRedIcon()}).addTo(map);
+
+const pois = [
+{
+name:"Duomo di Cagliari",
+lat:39.2189,
+lng:9.1164,
+desc:"Cattedrale storica della città.",
+transport:"Bus Linee 1 - 5 - 8",
+color:"blue"
+},
+{
+name:"Bastione Saint Remy",
+lat:39.2167,
+lng:9.1178,
+desc:"Belvedere panoramico simbolo di Cagliari.",
+transport:"Bus Linee 6 - 7",
+color:"green"
+},
+{
+name:"Museo Archeologico",
+lat:39.2211,
+lng:9.1120,
+desc:"Importante raccolta archeologica della Sardegna.",
+transport:"Bus Linea 10",
+color:"orange"
+},
+{
+name:"Porto di Cagliari",
+lat:39.2115,
+lng:9.1211,
+desc:"Area portuale e passeggiata sul mare.",
+transport:"Bus Linee PF - PQ",
+color:"purple"
+}
+];
+
+pois.forEach(p=>{
+let marker=L.circleMarker([p.lat,p.lng],{
+radius:10,
+color:p.color,
+fillColor:p.color,
+fillOpacity:0.9
+}).addTo(map);
+
+marker.on('click',()=>openCard(p));
+});
+
+function distanceKm(lat1,lng1,lat2,lng2){
+const R=6371;
+const dLat=(lat2-lat1)*Math.PI/180;
+const dLng=(lng2-lng1)*Math.PI/180;
+const a=
+Math.sin(dLat/2)*Math.sin(dLat/2)+
+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
+Math.sin(dLng/2)*Math.sin(dLng/2);
+const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+return (R*c).toFixed(2);
+}
+
+function openCard(p){
+let dist=distanceKm(userLat,userLng,p.lat,p.lng);
+
+document.getElementById("poiTitle").innerText=p.name;
+document.getElementById("poiDesc").innerText=p.desc;
+document.getElementById("poiTransport").innerText="Trasporti: "+p.transport;
+document.getElementById("poiDistance").innerText="Distanza a piedi: "+dist+" km";
+
+document.getElementById("goBtn").onclick=function(){
+window.open(`https://www.google.com/maps/dir/${userLat},${userLng}/${p.lat},${p.lng}`,'_blank');
+}
+
+document.getElementById("card").style.display="block";
+}
+
+function closeCard(){
+document.getElementById("card").style.display="none";
+}
+
+if(navigator.geolocation){
+navigator.geolocation.getCurrentPosition(pos=>{
+userLat=pos.coords.latitude;
+userLng=pos.coords.longitude;
+map.setView([userLat,userLng],16);
+userMarker.setLatLng([userLat,userLng]);
+});
+}
+
+</script>
+
+</body>
+</html>
