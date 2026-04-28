@@ -16,7 +16,7 @@ font-family:Arial,Helvetica,sans-serif;
 }
 
 body{
-background:#e9eef3;
+background:#e8edf2;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -30,35 +30,44 @@ height:844px;
 background:#fff;
 border-radius:28px;
 overflow:hidden;
-box-shadow:0 20px 50px rgba(0,0,0,0.20);
+box-shadow:0 25px 60px rgba(0,0,0,.25);
+position:relative;
 display:flex;
 flex-direction:column;
-position:relative;
 }
 
+/* HEADER */
 header{
-background:linear-gradient(90deg,#003366,#0055aa);
-color:white;
-padding:16px;
-text-align:center;
+height:70px;
+background:linear-gradient(90deg,#003366,#0056b3);
+color:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
 font-size:20px;
 font-weight:bold;
+text-align:center;
+padding:10px;
+z-index:10;
 }
 
+/* MAPPA FISSA */
 #map{
-flex:1;
+height:calc(100% - 160px);
+width:100%;
 z-index:1;
 }
 
+/* CARD */
 .poiCard{
 position:absolute;
-top:80px;
+top:85px;
 left:15px;
 right:15px;
-background:white;
-padding:14px;
+background:#fff;
+padding:15px;
 border-radius:18px;
-box-shadow:0 10px 30px rgba(0,0,0,0.25);
+box-shadow:0 15px 35px rgba(0,0,0,.25);
 z-index:999;
 display:none;
 }
@@ -78,37 +87,36 @@ color:#333;
 .poiCard button{
 width:100%;
 padding:12px;
-margin-top:10px;
 border:none;
 border-radius:12px;
-background:#0055aa;
-color:white;
+margin-top:10px;
 font-weight:bold;
-font-size:15px;
 cursor:pointer;
 }
 
-.closeBtn{
-background:#ddd !important;
-color:#000 !important;
-margin-top:8px !important;
+.go{
+background:#0056b3;
+color:#fff;
 }
 
+.close{
+background:#ddd;
+}
+
+/* FOOTER */
 footer{
 height:90px;
 background:#111;
-color:white;
+color:#fff;
 display:flex;
 flex-direction:column;
 justify-content:center;
-padding:6px 0;
 }
 
 .rss{
-height:28px;
+height:26px;
 overflow:hidden;
 white-space:nowrap;
-position:relative;
 border-top:1px solid rgba(255,255,255,.08);
 border-bottom:1px solid rgba(255,255,255,.08);
 }
@@ -116,29 +124,65 @@ border-bottom:1px solid rgba(255,255,255,.08);
 .track{
 display:inline-block;
 padding-left:100%;
-animation:scroll 28s linear infinite;
+animation:scroll 30s linear infinite;
+line-height:26px;
 font-size:13px;
-line-height:28px;
 }
 
 a{
-color:#00ffcc;
+color:#00ffd0;
 text-decoration:none;
 font-weight:bold;
-margin-right:40px;
+margin-right:35px;
 }
 
 .brand{
-text-align:center;
+height:28px;
+display:flex;
+justify-content:center;
+align-items:center;
 font-size:11px;
-padding-top:4px;
 letter-spacing:1px;
-color:#ccc;
+color:#ddd;
 }
 
 @keyframes scroll{
-0%{transform:translateX(0)}
-100%{transform:translateX(-100%)}
+0%{transform:translateX(0);}
+100%{transform:translateX(-100%);}
+}
+
+/* POI LABEL */
+.poiWrap{
+text-align:center;
+}
+
+.poiDot{
+width:24px;
+height:24px;
+border-radius:50%;
+border:3px solid #fff;
+margin:auto;
+box-shadow:0 3px 8px rgba(0,0,0,.3);
+}
+
+.poiText{
+font-size:11px;
+font-weight:bold;
+color:#111;
+margin-top:4px;
+width:110px;
+margin-left:-43px;
+text-align:center;
+line-height:12px;
+}
+
+/* RESPONSIVE */
+@media(max-width:450px){
+#phone{
+width:100vw;
+height:100vh;
+border-radius:0;
+}
 }
 </style>
 </head>
@@ -152,27 +196,29 @@ color:#ccc;
 <div id="map"></div>
 
 <div class="poiCard" id="card">
-<h2 id="poiTitle"></h2>
-<p id="poiDesc"></p>
-<p id="poiTransport"></p>
-<p id="poiDistance"></p>
-<button id="goBtn">PORTAMI QUI</button>
-<button class="closeBtn" onclick="closeCard()">CHIUDI</button>
+<h2 id="title"></h2>
+<p id="desc"></p>
+<p id="transport"></p>
+<p id="distance"></p>
+
+<button class="go" id="goBtn">PORTAMI QUI</button>
+<button class="close" onclick="closeCard()">CHIUDI</button>
 </div>
 
 <footer>
 
 <div class="rss">
-<div class="track" id="rss1">
-🎉 Concerto in piazza Centrale • 15/05/2026 ore 21:00 • Apertura mostra fotografica • 16/05/2026 ore 18:00 •
+<div class="track">
+🎉 Concerto Piazza Yenne ore 21:00 • Mostra fotografica ore 18:00 • Mercatino artigianale ore 10:00 • Festival ore 20:30 •
 </div>
 </div>
 
 <div class="rss">
-<div class="track" id="rss2">
-<a href="tel:070662641">Taxi</a>
-<a href="tel:070662641">Guardia Medica</a>
-<a href="tel:070662641">Veterinario</a>
+<div class="track">
+<a href="tel:41211">Taxi 41211</a>
+<a href="tel:606121">Guardia Medica 606121</a>
+<a href="tel:603333">Veterinario 603333</a>
+<a href="tel:112">Emergenze 112</a>
 </div>
 </div>
 
@@ -186,109 +232,115 @@ color:#ccc;
 
 <script>
 
-let map = L.map('map').setView([39.2238,9.1217],15);
+/* MAPPA BLOCCATA */
+const map = L.map('map',{
+zoomControl:false,
+dragging:false,
+scrollWheelZoom:false,
+doubleClickZoom:false,
+boxZoom:false,
+keyboard:false,
+touchZoom:false,
+tap:false
+}).setView([39.2238,9.1217],14);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-maxZoom:19
+maxZoom:18
 }).addTo(map);
 
-let userLat=39.2238;
-let userLng=9.1217;
+/* UTENTE */
+const userLat=39.2238;
+const userLng=9.1217;
 
-function createRedIcon(){
-return L.divIcon({
-html:'<div style="background:red;width:18px;height:18px;border-radius:50%;border:3px solid white;"></div><div style="font-size:11px;font-weight:bold;color:red;margin-top:4px;text-align:center;">TU SEI QUI</div>',
-iconSize:[80,40],
+const userIcon=L.divIcon({
+html:`
+<div style="text-align:center">
+<div style="width:28px;height:28px;background:red;border-radius:50%;border:4px solid white;margin:auto;box-shadow:0 4px 10px rgba(0,0,0,.3)"></div>
+<div style="font-size:12px;font-weight:bold;color:red;margin-top:4px;">TU SEI QUI</div>
+</div>
+`,
+iconSize:[100,55],
 className:''
 });
-}
 
-let userMarker=L.marker([userLat,userLng],{icon:createRedIcon()}).addTo(map);
+L.marker([userLat,userLng],{icon:userIcon}).addTo(map);
 
+/* POI */
 const pois = [
 {
-name:"Duomo di Cagliari",
-lat:39.2189,
-lng:9.1164,
-desc:"Cattedrale storica della città.",
-transport:"Bus Linee 1 - 5 - 8",
-color:"blue"
+name:"Basilica di Bonaria",
+lat:39.2107,lng:9.1294,
+desc:"Santuario storico tra i luoghi simbolo della città.",
+transport:"Bus 5 - 6 - PF",
+color:"#0066ff"
+},
+{
+name:"Orto Botanico",
+lat:39.2231,lng:9.1116,
+desc:"Grande area verde con collezioni botaniche.",
+transport:"Bus 1 - 9",
+color:"#00aa44"
 },
 {
 name:"Bastione Saint Remy",
-lat:39.2167,
-lng:9.1178,
-desc:"Belvedere panoramico simbolo di Cagliari.",
-transport:"Bus Linee 6 - 7",
-color:"green"
+lat:39.2168,lng:9.1178,
+desc:"Belvedere panoramico sul centro storico.",
+transport:"Bus 6 - 7",
+color:"#ff8800"
 },
 {
-name:"Museo Archeologico",
-lat:39.2211,
-lng:9.1120,
-desc:"Importante raccolta archeologica della Sardegna.",
-transport:"Bus Linea 10",
-color:"orange"
-},
-{
-name:"Porto di Cagliari",
-lat:39.2115,
-lng:9.1211,
-desc:"Area portuale e passeggiata sul mare.",
-transport:"Bus Linee PF - PQ",
-color:"purple"
+name:"Duomo di Cagliari",
+lat:39.2190,lng:9.1160,
+desc:"Cattedrale medievale nel quartiere Castello.",
+transport:"Bus 8",
+color:"#8e44ad"
 }
 ];
 
 pois.forEach(p=>{
-let marker=L.circleMarker([p.lat,p.lng],{
-radius:10,
-color:p.color,
-fillColor:p.color,
-fillOpacity:0.9
-}).addTo(map);
 
-marker.on('click',()=>openCard(p));
+const icon=L.divIcon({
+html:`
+<div class="poiWrap">
+<div class="poiDot" style="background:${p.color};"></div>
+<div class="poiText">${p.name}</div>
+</div>
+`,
+iconSize:[100,55],
+className:''
 });
 
-function distanceKm(lat1,lng1,lat2,lng2){
+const marker=L.marker([p.lat,p.lng],{icon}).addTo(map);
+
+marker.on('click',()=>showCard(p));
+});
+
+function dist(lat1,lon1,lat2,lon2){
 const R=6371;
 const dLat=(lat2-lat1)*Math.PI/180;
-const dLng=(lng2-lng1)*Math.PI/180;
+const dLon=(lon2-lon1)*Math.PI/180;
 const a=
 Math.sin(dLat/2)*Math.sin(dLat/2)+
 Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
-Math.sin(dLng/2)*Math.sin(dLng/2);
-const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-return (R*c).toFixed(2);
+Math.sin(dLon/2)*Math.sin(dLon/2);
+return (R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))).toFixed(2);
 }
 
-function openCard(p){
-let dist=distanceKm(userLat,userLng,p.lat,p.lng);
-
-document.getElementById("poiTitle").innerText=p.name;
-document.getElementById("poiDesc").innerText=p.desc;
-document.getElementById("poiTransport").innerText="Trasporti: "+p.transport;
-document.getElementById("poiDistance").innerText="Distanza a piedi: "+dist+" km";
+function showCard(p){
+document.getElementById("title").innerText=p.name;
+document.getElementById("desc").innerText=p.desc;
+document.getElementById("transport").innerText="Trasporti: "+p.transport;
+document.getElementById("distance").innerText="Distanza a piedi: "+dist(userLat,userLng,p.lat,p.lng)+" km";
 
 document.getElementById("goBtn").onclick=function(){
 window.open(`https://www.google.com/maps/dir/${userLat},${userLng}/${p.lat},${p.lng}`,'_blank');
-}
+};
 
 document.getElementById("card").style.display="block";
 }
 
 function closeCard(){
 document.getElementById("card").style.display="none";
-}
-
-if(navigator.geolocation){
-navigator.geolocation.getCurrentPosition(pos=>{
-userLat=pos.coords.latitude;
-userLng=pos.coords.longitude;
-map.setView([userLat,userLng],16);
-userMarker.setLatLng([userLat,userLng]);
-});
 }
 
 </script>
